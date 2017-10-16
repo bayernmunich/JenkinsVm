@@ -1,0 +1,491 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "virtualMachines_JenkinsOnUbuntu_name": {
+            "defaultValue": "JenkinsOnUbuntu",
+            "type": "String"
+        },
+        "networkInterfaces_jenkinsonubuntu713_name": {
+            "defaultValue": "jenkinsonubuntu713",
+            "type": "String"
+        },
+        "publicIPAddresses_JenkinsOnUbuntu_ip_name": {
+            "defaultValue": "JenkinsOnUbuntu-ip",
+            "type": "String"
+        },
+        "virtualNetworks_jenkinsonUbuntu_vnet_name": {
+            "defaultValue": "jenkinsonUbuntu-vnet",
+            "type": "String"
+        },
+        "storageAccounts_jenkinsonubuntudiag748_name": {
+            "defaultValue": "jenkinsonubuntudiag748",
+            "type": "String"
+        },
+        "networkSecurityGroups_JenkinsOnUbuntu_nsg_name": {
+            "defaultValue": "JenkinsOnUbuntu-nsg",
+            "type": "String"
+        },
+        "schedules_shutdown_computevm_jenkinsonubuntu_name": {
+            "defaultValue": "shutdown-computevm-jenkinsonubuntu",
+            "type": "String"
+        },
+        "subnets_default_name": {
+            "defaultValue": "default",
+            "type": "String"
+        },
+        "disks_JenkinsOnUbuntu_OsDisk_1_1a96027a144a400bb71c74d2cde509f3_name": {
+            "defaultValue": "JenkinsOnUbuntu_OsDisk_1_1a96027a144a400bb71c74d2cde509f3",
+            "type": "String"
+        },
+        "securityRules_Port_3389_name": {
+            "defaultValue": "Port_3389",
+            "type": "String"
+        },
+        "securityRules_default_allow_ssh_name": {
+            "defaultValue": "default-allow-ssh",
+            "type": "String"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "comments": "Generalized from resource: '/subscriptions/bd6bd12d-6929-43df-a6b4-edeca09e8a71/resourceGroups/jenkinsonUbuntu/providers/Microsoft.Compute/disks/JenkinsOnUbuntu_OsDisk_1_1a96027a144a400bb71c74d2cde509f3'.",
+            "type": "Microsoft.Compute/disks",
+            "name": "[parameters('disks_JenkinsOnUbuntu_OsDisk_1_1a96027a144a400bb71c74d2cde509f3_name')]",
+            "apiVersion": "2016-04-30-preview",
+            "location": "eastus",
+            "scale": null,
+            "properties": {
+                "accountType": "Premium_LRS",
+                "osType": "Linux",
+                "creationData": {
+                    "createOption": "FromImage",
+                    "imageReference": {
+                        "id": "/Subscriptions/bd6bd12d-6929-43df-a6b4-edeca09e8a71/Providers/Microsoft.Compute/Locations/eastus/Publishers/Canonical/ArtifactTypes/VMImage/Offers/UbuntuServer/Skus/16.04-LTS/Versions/latest"
+                    }
+                },
+                "diskSizeGB": 30
+            },
+            "dependsOn": []
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/bd6bd12d-6929-43df-a6b4-edeca09e8a71/resourceGroups/jenkinsonUbuntu/providers/Microsoft.Compute/virtualMachines/JenkinsOnUbuntu'.",
+            "type": "Microsoft.Compute/virtualMachines",
+            "name": "[parameters('virtualMachines_JenkinsOnUbuntu_name')]",
+            "apiVersion": "2016-04-30-preview",
+            "location": "eastus",
+            "scale": null,
+            "properties": {
+                "hardwareProfile": {
+                    "vmSize": "Standard_D4s_v3"
+                },
+                "storageProfile": {
+                    "imageReference": {
+                        "publisher": "Canonical",
+                        "offer": "UbuntuServer",
+                        "sku": "16.04-LTS",
+                        "version": "latest"
+                    },
+                    "osDisk": {
+                        "osType": "Linux",
+                        "name": "[concat(parameters('virtualMachines_JenkinsOnUbuntu_name'),'_OsDisk_1_1a96027a144a400bb71c74d2cde509f3')]",
+                        "createOption": "FromImage",
+                        "caching": "ReadWrite",
+                        "managedDisk": {
+                            "id": "[resourceId('Microsoft.Compute/disks', parameters('disks_JenkinsOnUbuntu_OsDisk_1_1a96027a144a400bb71c74d2cde509f3_name'))]"
+                        }
+                    },
+                    "dataDisks": []
+                },
+                "osProfile": {
+                    "computerName": "[parameters('virtualMachines_JenkinsOnUbuntu_name')]",
+                    "adminUsername": "vmadmin",
+                    "linuxConfiguration": {
+                        "disablePasswordAuthentication": false
+                    },
+                    "secrets": []
+                },
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_jenkinsonubuntu713_name'))]"
+                        }
+                    ]
+                },
+                "diagnosticsProfile": {
+                    "bootDiagnostics": {
+                        "enabled": true,
+                        "storageUri": "[concat('https', '://', parameters('storageAccounts_jenkinsonubuntudiag748_name'), '.blob.core.windows.net', '/')]"
+                    }
+                }
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Compute/disks', parameters('disks_JenkinsOnUbuntu_OsDisk_1_1a96027a144a400bb71c74d2cde509f3_name'))]",
+                "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_jenkinsonubuntu713_name'))]",
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_jenkinsonubuntudiag748_name'))]"
+            ]
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/bd6bd12d-6929-43df-a6b4-edeca09e8a71/resourcegroups/jenkinsonubuntu/providers/microsoft.devtestlab/schedules/shutdown-computevm-jenkinsonubuntu'.",
+            "type": "microsoft.devtestlab/schedules",
+            "name": "[parameters('schedules_shutdown_computevm_jenkinsonubuntu_name')]",
+            "apiVersion": "2016-05-15",
+            "location": "eastus",
+            "scale": null,
+            "properties": {
+                "status": "Enabled",
+                "taskType": "ComputeVmShutdownTask",
+                "dailyRecurrence": {
+                    "time": "1900"
+                },
+                "timeZoneId": "UTC",
+                "notificationSettings": {
+                    "status": "Disabled",
+                    "timeInMinutes": 30
+                },
+                "targetResourceId": "[resourceId('Microsoft.Compute/virtualMachines', parameters('virtualMachines_JenkinsOnUbuntu_name'))]",
+                "provisioningState": "Succeeded",
+                "uniqueIdentifier": "e92fdf21-aae3-42f7-bdae-ee7ca0338499"
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Compute/virtualMachines', parameters('virtualMachines_JenkinsOnUbuntu_name'))]"
+            ]
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/bd6bd12d-6929-43df-a6b4-edeca09e8a71/resourceGroups/jenkinsonUbuntu/providers/Microsoft.Network/networkInterfaces/jenkinsonubuntu713'.",
+            "type": "Microsoft.Network/networkInterfaces",
+            "name": "[parameters('networkInterfaces_jenkinsonubuntu713_name')]",
+            "apiVersion": "2017-06-01",
+            "location": "eastus",
+            "scale": null,
+            "properties": {
+                "provisioningState": "Succeeded",
+                "resourceGuid": "6c006c48-3883-48cb-bffa-56a9041f9173",
+                "ipConfigurations": [
+                    {
+                        "name": "ipconfig1",
+                        "etag": "W/\"e49327be-f1d5-45ca-9fe3-8b73490cec47\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "privateIPAddress": "10.1.6.4",
+                            "privateIPAllocationMethod": "Dynamic",
+                            "publicIPAddress": {
+                                "id": "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddresses_JenkinsOnUbuntu_ip_name'))]"
+                            },
+                            "subnet": {
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_jenkinsonUbuntu_vnet_name'), parameters('subnets_default_name'))]"
+                            },
+                            "primary": true,
+                            "privateIPAddressVersion": "IPv4"
+                        }
+                    }
+                ],
+                "dnsSettings": {
+                    "dnsServers": [],
+                    "appliedDnsServers": []
+                },
+                "enableAcceleratedNetworking": false,
+                "enableIPForwarding": false,
+                "networkSecurityGroup": {
+                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_JenkinsOnUbuntu_nsg_name'))]"
+                },
+                "primary": true,
+                "virtualMachine": {
+                    "id": "[resourceId('Microsoft.Compute/virtualMachines', parameters('virtualMachines_JenkinsOnUbuntu_name'))]"
+                }
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddresses_JenkinsOnUbuntu_ip_name'))]",
+                "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_jenkinsonUbuntu_vnet_name'), parameters('subnets_default_name'))]",
+                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_JenkinsOnUbuntu_nsg_name'))]",
+                "[resourceId('Microsoft.Compute/virtualMachines', parameters('virtualMachines_JenkinsOnUbuntu_name'))]"
+            ]
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/bd6bd12d-6929-43df-a6b4-edeca09e8a71/resourceGroups/jenkinsonUbuntu/providers/Microsoft.Network/networkSecurityGroups/JenkinsOnUbuntu-nsg'.",
+            "type": "Microsoft.Network/networkSecurityGroups",
+            "name": "[parameters('networkSecurityGroups_JenkinsOnUbuntu_nsg_name')]",
+            "apiVersion": "2017-06-01",
+            "location": "eastus",
+            "scale": null,
+            "properties": {
+                "provisioningState": "Succeeded",
+                "resourceGuid": "ccdf5dc8-a93f-4084-9b5f-db6ffe74214a",
+                "securityRules": [
+                    {
+                        "name": "default-allow-ssh",
+                        "etag": "W/\"7a56dfa7-278d-4f46-8624-30817b280b79\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "protocol": "TCP",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "22",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 1000,
+                            "direction": "Inbound",
+                            "sourceAddressPrefixes": [],
+                            "destinationAddressPrefixes": []
+                        }
+                    },
+                    {
+                        "name": "Port_3389",
+                        "etag": "W/\"7a56dfa7-278d-4f46-8624-30817b280b79\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "protocol": "*",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "3389",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 1010,
+                            "direction": "Inbound",
+                            "sourceAddressPrefixes": [],
+                            "destinationAddressPrefixes": []
+                        }
+                    }
+                ],
+                "defaultSecurityRules": [
+                    {
+                        "name": "AllowVnetInBound",
+                        "etag": "W/\"7a56dfa7-278d-4f46-8624-30817b280b79\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "description": "Allow inbound traffic from all VMs in VNET",
+                            "protocol": "*",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "*",
+                            "sourceAddressPrefix": "VirtualNetwork",
+                            "destinationAddressPrefix": "VirtualNetwork",
+                            "access": "Allow",
+                            "priority": 65000,
+                            "direction": "Inbound",
+                            "sourceAddressPrefixes": [],
+                            "destinationAddressPrefixes": []
+                        }
+                    },
+                    {
+                        "name": "AllowAzureLoadBalancerInBound",
+                        "etag": "W/\"7a56dfa7-278d-4f46-8624-30817b280b79\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "description": "Allow inbound traffic from azure load balancer",
+                            "protocol": "*",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "*",
+                            "sourceAddressPrefix": "AzureLoadBalancer",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 65001,
+                            "direction": "Inbound",
+                            "sourceAddressPrefixes": [],
+                            "destinationAddressPrefixes": []
+                        }
+                    },
+                    {
+                        "name": "DenyAllInBound",
+                        "etag": "W/\"7a56dfa7-278d-4f46-8624-30817b280b79\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "description": "Deny all inbound traffic",
+                            "protocol": "*",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "*",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "*",
+                            "access": "Deny",
+                            "priority": 65500,
+                            "direction": "Inbound",
+                            "sourceAddressPrefixes": [],
+                            "destinationAddressPrefixes": []
+                        }
+                    },
+                    {
+                        "name": "AllowVnetOutBound",
+                        "etag": "W/\"7a56dfa7-278d-4f46-8624-30817b280b79\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "description": "Allow outbound traffic from all VMs to all VMs in VNET",
+                            "protocol": "*",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "*",
+                            "sourceAddressPrefix": "VirtualNetwork",
+                            "destinationAddressPrefix": "VirtualNetwork",
+                            "access": "Allow",
+                            "priority": 65000,
+                            "direction": "Outbound",
+                            "sourceAddressPrefixes": [],
+                            "destinationAddressPrefixes": []
+                        }
+                    },
+                    {
+                        "name": "AllowInternetOutBound",
+                        "etag": "W/\"7a56dfa7-278d-4f46-8624-30817b280b79\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "description": "Allow outbound traffic from all VMs to Internet",
+                            "protocol": "*",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "*",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "Internet",
+                            "access": "Allow",
+                            "priority": 65001,
+                            "direction": "Outbound",
+                            "sourceAddressPrefixes": [],
+                            "destinationAddressPrefixes": []
+                        }
+                    },
+                    {
+                        "name": "DenyAllOutBound",
+                        "etag": "W/\"7a56dfa7-278d-4f46-8624-30817b280b79\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "description": "Deny all outbound traffic",
+                            "protocol": "*",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "*",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "*",
+                            "access": "Deny",
+                            "priority": 65500,
+                            "direction": "Outbound",
+                            "sourceAddressPrefixes": [],
+                            "destinationAddressPrefixes": []
+                        }
+                    }
+                ]
+            },
+            "dependsOn": []
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/bd6bd12d-6929-43df-a6b4-edeca09e8a71/resourceGroups/jenkinsonUbuntu/providers/Microsoft.Network/publicIPAddresses/JenkinsOnUbuntu-ip'.",
+            "type": "Microsoft.Network/publicIPAddresses",
+            "name": "[parameters('publicIPAddresses_JenkinsOnUbuntu_ip_name')]",
+            "apiVersion": "2017-06-01",
+            "location": "eastus",
+            "scale": null,
+            "properties": {
+                "provisioningState": "Succeeded",
+                "resourceGuid": "66eec15c-0435-4c43-a44d-edd76fda61f4",
+                "ipAddress": "40.71.101.197",
+                "publicIPAddressVersion": "IPv4",
+                "publicIPAllocationMethod": "Static",
+                "idleTimeoutInMinutes": 4,
+                "dnsSettings": {
+                    "domainNameLabel": "ani",
+                    "fqdn": "ani.eastus.cloudapp.azure.com"
+                }
+            },
+            "dependsOn": []
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/bd6bd12d-6929-43df-a6b4-edeca09e8a71/resourceGroups/jenkinsonUbuntu/providers/Microsoft.Network/virtualNetworks/jenkinsonUbuntu-vnet'.",
+            "type": "Microsoft.Network/virtualNetworks",
+            "name": "[parameters('virtualNetworks_jenkinsonUbuntu_vnet_name')]",
+            "apiVersion": "2017-06-01",
+            "location": "eastus",
+            "scale": null,
+            "properties": {
+                "provisioningState": "Succeeded",
+                "resourceGuid": "de589bbf-11cd-441a-83cb-2c5942006ad2",
+                "addressSpace": {
+                    "addressPrefixes": [
+                        "10.1.6.0/24"
+                    ]
+                },
+                "subnets": [
+                    {
+                        "name": "default",
+                        "etag": "W/\"dcc2023d-3f45-4c4c-844d-ddfe557f3005\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "addressPrefix": "10.1.6.0/24"
+                        }
+                    }
+                ],
+                "virtualNetworkPeerings": []
+            },
+            "dependsOn": []
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/bd6bd12d-6929-43df-a6b4-edeca09e8a71/resourceGroups/jenkinsonubuntu/providers/Microsoft.Storage/storageAccounts/jenkinsonubuntudiag748'.",
+            "type": "Microsoft.Storage/storageAccounts",
+            "sku": {
+                "name": "Standard_LRS",
+                "tier": "Standard"
+            },
+            "kind": "Storage",
+            "name": "[parameters('storageAccounts_jenkinsonubuntudiag748_name')]",
+            "apiVersion": "2016-01-01",
+            "location": "eastus",
+            "tags": {},
+            "scale": null,
+            "properties": {},
+            "dependsOn": []
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/bd6bd12d-6929-43df-a6b4-edeca09e8a71/resourceGroups/jenkinsonUbuntu/providers/Microsoft.Network/networkSecurityGroups/JenkinsOnUbuntu-nsg/securityRules/default-allow-ssh'.",
+            "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+            "name": "[concat(parameters('networkSecurityGroups_JenkinsOnUbuntu_nsg_name'), '/', parameters('securityRules_default_allow_ssh_name'))]",
+            "apiVersion": "2017-06-01",
+            "scale": null,
+            "properties": {
+                "provisioningState": "Succeeded",
+                "protocol": "TCP",
+                "sourcePortRange": "*",
+                "destinationPortRange": "22",
+                "sourceAddressPrefix": "*",
+                "destinationAddressPrefix": "*",
+                "access": "Allow",
+                "priority": 1000,
+                "direction": "Inbound",
+                "sourceAddressPrefixes": [],
+                "destinationAddressPrefixes": []
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_JenkinsOnUbuntu_nsg_name'))]"
+            ]
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/bd6bd12d-6929-43df-a6b4-edeca09e8a71/resourceGroups/jenkinsonUbuntu/providers/Microsoft.Network/networkSecurityGroups/JenkinsOnUbuntu-nsg/securityRules/Port_3389'.",
+            "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+            "name": "[concat(parameters('networkSecurityGroups_JenkinsOnUbuntu_nsg_name'), '/', parameters('securityRules_Port_3389_name'))]",
+            "apiVersion": "2017-06-01",
+            "scale": null,
+            "properties": {
+                "provisioningState": "Succeeded",
+                "protocol": "*",
+                "sourcePortRange": "*",
+                "destinationPortRange": "3389",
+                "sourceAddressPrefix": "*",
+                "destinationAddressPrefix": "*",
+                "access": "Allow",
+                "priority": 1010,
+                "direction": "Inbound",
+                "sourceAddressPrefixes": [],
+                "destinationAddressPrefixes": []
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_JenkinsOnUbuntu_nsg_name'))]"
+            ]
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/bd6bd12d-6929-43df-a6b4-edeca09e8a71/resourceGroups/jenkinsonUbuntu/providers/Microsoft.Network/virtualNetworks/jenkinsonUbuntu-vnet/subnets/default'.",
+            "type": "Microsoft.Network/virtualNetworks/subnets",
+            "name": "[concat(parameters('virtualNetworks_jenkinsonUbuntu_vnet_name'), '/', parameters('subnets_default_name'))]",
+            "apiVersion": "2017-06-01",
+            "scale": null,
+            "properties": {
+                "provisioningState": "Succeeded",
+                "addressPrefix": "10.1.6.0/24"
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_jenkinsonUbuntu_vnet_name'))]"
+            ]
+        }
+    ]
+}
