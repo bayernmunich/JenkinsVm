@@ -1,0 +1,48 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "images_JenkinsOnUbuntu_image_20171016104522_name": {
+            "defaultValue": "JenkinsOnUbuntu-image-20171016104522",
+            "type": "String"
+        },
+        "images_JenkinsOnUbuntu_image_20171016104522_id": {
+            "defaultValue": "/subscriptions/bd6bd12d-6929-43df-a6b4-edeca09e8a71/resourceGroups/jenkinsonUbuntu/providers/Microsoft.Compute/virtualMachines/JenkinsOnUbuntu",
+            "type": "String"
+        },
+        "images_JenkinsOnUbuntu_image_20171016104522_id_1": {
+            "defaultValue": "/subscriptions/bd6bd12d-6929-43df-a6b4-edeca09e8a71/resourceGroups/JENKINSONUBUNTU/providers/Microsoft.Compute/disks/JenkinsOnUbuntu_OsDisk_1_1a96027a144a400bb71c74d2cde509f3",
+            "type": "String"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "comments": "Generalized from resource: '/subscriptions/bd6bd12d-6929-43df-a6b4-edeca09e8a71/resourceGroups/ImageJenkins/providers/Microsoft.Compute/images/JenkinsOnUbuntu-image-20171016104522'.",
+            "type": "Microsoft.Compute/images",
+            "name": "[parameters('images_JenkinsOnUbuntu_image_20171016104522_name')]",
+            "apiVersion": "2016-04-30-preview",
+            "location": "eastus",
+            "scale": null,
+            "properties": {
+                "sourceVirtualMachine": {
+                    "id": "[parameters('images_JenkinsOnUbuntu_image_20171016104522_id')]"
+                },
+                "storageProfile": {
+                    "osDisk": {
+                        "osType": "Linux",
+                        "osState": "Generalized",
+                        "diskSizeGB": 30,
+                        "managedDisk": {
+                            "id": "[parameters('images_JenkinsOnUbuntu_image_20171016104522_id_1')]"
+                        },
+                        "caching": "ReadWrite",
+                        "storageAccountType": "Standard_LRS"
+                    },
+                    "dataDisks": []
+                }
+            },
+            "dependsOn": []
+        }
+    ]
+}
